@@ -74,7 +74,7 @@ const admin = (req,res ,next)=>{
    if(decoded.role!="admin"){
       return res.status(401).json({"message":"acess denied"});
    }
-   console.log(userrole)
+   
    next()
 
 
