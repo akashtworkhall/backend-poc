@@ -1,8 +1,8 @@
 import { dbConnection } from "../db.js";
-import { validatesearch ,validate} from "../validation/validationMiddleware.js";
-import Joi  from "joi";
+
+
 import { ObjectId } from "mongodb";
-import { destination_before_source, destination_invalid, past_dates, past_dates_update, proper_inputs, sleeper_rates_negative, sleeper_seats_negative, source_destination_equal, source_invalid, threeac_rates_negative, threeac_seats_negative, train_already_present, train_departured, trains_not_found } from "../constant.js";
+import { destination_before_source, destination_invalid, past_dates, past_dates_update,  source_destination_equal, source_invalid,  train_already_present, train_departured, trains_not_found } from "../constant.js";
 
 
 async function search_train(req,res){
@@ -13,17 +13,11 @@ const date = req.query.date;
 const source = req.query.source;
 const destination = req.query.destination;
 console.log(req.query)
-const query = {
-  $and: [{ trainname: train_name },{ trainno: train_no }, { date: date }],
-};
+
 let sourceIndex;
 let destinationindex;
 if (source && destination){
-  if (!source || !destination || !date) {
-    return res
-      .status(400)
-      .json({"message":fields_mandatory});
-  }
+ 
   const data = await dbConnection.collection("train_details");
   const result = await data
     .find({
@@ -63,7 +57,6 @@ if (source && destination){
     return res.json({"message":destination_before_source});
   }
 }
-let result1;
 let result;
 let name;
 let resulttrain;
@@ -171,32 +164,12 @@ let { train_name, train_no, no_of_seats, stations, rate, date } = req.body;
         })
       }
      
-    // if(no_of_seats.sleeper <= 0){
-    //     return res.json({"message":sleeper_seats_negative});
-    //   }
-    //   if(no_of_seats.threeac<= 0){
-    //     return res.json({"message" :threeac_seats_negative});
-    //   }
-    //   if(rate.threeac<= 0 ){
-    //     return res.json({"message":threeac_rates_negative});
-    //   }
-    //   if(rate.sleeper<= 0){
-    //     return res.json({"message":sleeper_rates_negative});
-    //   }
+  
      const currentDate = new Date();
       console.log(currentDate.getMonth());
       const inputDate = new Date(date);
       console.log(inputDate.getMonth())
-      // if( (inputDate.getFullYear()<  currentDate.getFullYear() )  )
-      // {
-      //   return res.status(400).json({"message" :past_dates})
-      // }
-      // if(   (inputDate.getMonth()< currentDate.getMonth() ) ){
-      //   return res.status(400).send(past_dates) 
-      // }
-      // if(   (inputDate.getDate()< currentDate.getDate() ) ){
-      //   return res.status(400).send(past_dates) 
-      // }
+     
       if(  (inputDate.getFullYear()<  currentDate.getFullYear() ) || (inputDate.getMonth()< currentDate.getMonth() ) ||  (inputDate.getDate()< currentDate.getDate() ) ){
         return res.status(422).send({"message":past_dates}) 
       }
@@ -257,13 +230,8 @@ let { train_name, train_no, no_of_seats, stations, rate, date } = req.body;
         return res.status(422).send({"message":past_dates_update}) 
       }
     
-     
-  // if(trainDate.getDate()< currentDate.getDate()){
-  //   return res.status(400).json({"message":train_departured })
-  // }
-  
-  
-    if (train_name  || train_no || date ) {
+    
+  if (train_name  || train_no || date ) {
       settrainname =  train_name ;
       setdate = date;
       settrainno = train_no     
@@ -271,13 +239,14 @@ let { train_name, train_no, no_of_seats, stations, rate, date } = req.body;
     }
    
     console.log({ settrainname ,settrainno ,setdate});
-    const name = await updatestaion.updateOne(
+    const updated = await updatestaion.updateOne(
       { _id: new ObjectId(req.params.id) },
       { $set: { train_name:settrainname ,train_no:settrainno ,date:setdate } },
       { upsert: true }
     )
     res.status(201).json({
-      "message":"train details updated"
+      "message":"train details updated",
+      "updated": updated
     });
     
   } catch (err) {
@@ -369,7 +338,7 @@ async function train_delete(req,res){
 async function change_role(req,res){
   const role = req.body.role
   const user = await dbConnection.collection("train_user");
-  const changerole = await role.updateOne({
+  const changerole = await user.updateOne({
     _id:new ObjectId(req.params.id)
   },
   {
@@ -380,6 +349,7 @@ async function change_role(req,res){
 )
 res.status(200).json({
   "message":"role successfully changed",
+  "changerole":changerole
   
 
 })
