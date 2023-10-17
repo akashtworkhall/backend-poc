@@ -1,6 +1,4 @@
 import { dbConnection } from "../db.js";
-
-
 import { ObjectId } from "mongodb";
 import { destination_before_source, destination_invalid, past_dates, past_dates_update,  source_destination_equal, source_invalid,  train_already_present, train_departured, trains_not_found } from "../constant.js";
 
@@ -299,11 +297,8 @@ let { train_name, train_no, no_of_seats, stations, rate, date } = req.body;
   
     return res.send(updateSeats)
   }
-
-
-  if(setThreeac){
-
-    const  updateSeats = await updatetrain.updateOne(
+ if(setThreeac){
+  const  updateSeats = await updatetrain.updateOne(
       {
       _id: new ObjectId(req.params.id),
 
@@ -332,7 +327,7 @@ async function train_delete(req,res){
     const deletetrain = await trainDelete.deleteOne({
       _id: new ObjectId(req.params.id),
     });
-    res.send(deletetrain);
+    res.stati(deletetrain);
  
 }
 async function change_role(req,res){
