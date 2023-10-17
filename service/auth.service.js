@@ -9,17 +9,13 @@ import { v4 as uuidv4 } from 'uuid';
 
  async function login_user(req,res){
 
-  
-
-    if(req.cookies.acesstoken){
+  if(req.cookies.acesstoken){
      
         return res.json({"message":already_logined})
       }
       const  { email, password  } = req.body;
      
       const user = await dbConnection.collection("train_user").findOne({ email });
-      
-       
       if (!user) {
         res.status(400).json({"message":"email not found"});
         return;
@@ -27,50 +23,45 @@ import { v4 as uuidv4 } from 'uuid';
      console.log(user)
      console.log(password ,user.password)
       const validpassword = await bcrypt.compare(password, user.password);
-     
-      if (!validpassword) {
+       if (!validpassword) {
         return res.status(400).json({"message":password_invalid});
       }
-    
-  
-      const accestoken = Jwt.sign(
+       const accestoken = Jwt.sign(
         { _id: user._id, role: user.role ,email:user.email ,refreshtoken :user.refreshtoken  },
         "privateaccesskey",
         {
-          expiresIn: "1d",
+          expiresIn: "15m",
         }
       );
       let expiredAt = new Date();
-
-      expiredAt.setSeconds(
+        expiredAt.setSeconds(
         expiredAt.getSeconds() + 120
       );
     let _token = uuidv4()
-   
-      const reftoken = ({
+    const reftoken = ({
       usertoken :_token,
       userid : user._id,
        useremail :user.email,
        userrole :user.role,
         expiryDate : expiredAt.getTime()
  })
-
-  
-    
-      
       const ref = await dbConnection.collection("user_token");
       const token = await ref.insertOne(
         
        reftoken
-        
       );
       console.log(token);
-     
-      res.cookie("acesstoken", accestoken, {
+     res.cookie("acesstoken", accestoken, {
         httpOnly: true,
         path: "/",
          maxAge : 8640000
       } ,
+      );
+      res.cookie("refreshtoken", _token, {
+        httpOnly: true,
+        path: "/",
+         maxAge : 8640000
+         },
       );
 
       return res.json({"message":succesfully_loggedin});
@@ -103,18 +94,17 @@ async function logout_user(req,res){
 
 async function refreshToken (req,res){
 
-  const usertoken = req.params;
-  console.log(usertoken.refreshtoken )
-   
-  if(usertoken.refreshtoken === null){
+  const usertoken = req.cookies.refreshtoken;
+  console .log(usertoken ,"usertoken")
+  if(usertoken === null){
     return res.status(403).json({
       "message":refreshtoken_not_found
     })
   }
  
   const ref = await dbConnection.collection("user_token");
-  console.log(ref)
-  const tokens = await ref.findOne({usertoken : usertoken.refreshtoken});
+  
+  const tokens = await ref.findOne({usertoken : usertoken.toString()});
   console.log(tokens ,"tokens")
   if(tokens === null){
     res.send("data not found")
@@ -135,6 +125,7 @@ async function refreshToken (req,res){
   } ,
   );
  res.send("access token changed")
+ 
 }
 
 export {
