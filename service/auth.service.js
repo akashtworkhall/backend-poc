@@ -1,7 +1,7 @@
 import { dbConnection } from "../db.js";
 import bcrypt from "bcrypt";
 import Jwt from "jsonwebtoken"
-import { already_logined, cookies_not_found,  internal_server_error, logout_succesfull, password_invalid, refreshtoken_not_found, succesfully_loggedin } from "../constant.js";
+import { acces_token_changed, already_logined, cookies_not_found,  internal_server_error, logout_succesfull, password_invalid, refreshtoken_not_found, succesfully_loggedin } from "../constant.js";
 import { v4 as uuidv4 } from 'uuid';
 
 
@@ -124,7 +124,7 @@ async function refreshToken (req,res){
      maxAge : 8640000
   } ,
   );
- res.send("access token changed")
+ res.status(200).json({"message":acces_token_changed})
  
 }
 

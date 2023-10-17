@@ -50,4 +50,5 @@ export const past_dates_update = "past date cannot be updated"
 export const train_departured  =  "train details cannot be updated as train has departured"
 export const acess_denied = "acess denied"
 export const not_logged_in = "Not yet logged in"
+export const acces_token_changed = "access token changed"
 
