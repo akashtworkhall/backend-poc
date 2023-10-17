@@ -1,10 +1,9 @@
-import { date_not_valid, destination_before_source, destination_invalid, fields_mandatory, id_not_valid,succesfully_registered, passengers_greater_than_seats, proper_inputs, seats_less_than_zero, source_destination_equal, source_invalid, succes, tickets_to_be_cancel, trains_not_found  ,email_not_found} from "../constant.js";
+import { date_not_valid, destination_before_source, destination_invalid,  id_not_valid,succesfully_registered, passengers_greater_than_seats,  seats_less_than_zero, source_destination_equal, source_invalid, succes, tickets_to_be_cancel ,email_not_found} from "../constant.js";
 import { dbConnection } from "../db.js";
-import { validatesearch ,validate} from "../validation/validationMiddleware.js";
-import Joi from "joi";
+
 import bcrypt from  "bcrypt"
 import { ObjectId } from "mongodb";
-import { updateseats } from "../entity/delete.entity.js";
+
 
 
 async function create_user(req,res){
@@ -71,7 +70,7 @@ async function book_train(req,res){
       }
       
       const user = await dbConnection.collection("train_user");
-    
+      console.log(user)
       let finalrate;
     
       const traindetails = await dbConnection.collection("train_details");
@@ -103,7 +102,7 @@ async function book_train(req,res){
         return res.status(422).json({"message":source_destination_equal});
       }
     
-      let rate;
+      let rate; 
       if (coach === "threeac"){
         if (no_of_passengers > train.no_of_seats["threeac"]) {
           return res
@@ -214,6 +213,7 @@ async function book_train(req,res){
         date,
       });
     
+      console.log(trainbooking);
       if (coach === "sleeper") {
         console.log(train.no_of_seats["threeac"], "threeac seats");
         const seatsupdatesleeper = await traindetails.updateOne(
@@ -319,9 +319,10 @@ async function show_booked(req,res){
   if(noofseatscancel === findtrain.no_of_passengers){
 
   if(findtrain.coach ==="threeac"){
-   // const {updatethreeac ,updatepassengers} = updateseats(findogtrain.no_of_seats.threeac,findtrain.no_of_passengers,noofseatscancel);
+  
     const updatethreeac = parseInt(findogtrain.no_of_seats.threeac) + noofseatscancel
     const updatepassengers = parseInt(findtrain.no_of_passengers)-noofseatscancel
+    console.log(updatepassengers)
     console.log(updatethreeac ,"updatethreeac")
     const updatetrain = await ogtrain.updateOne(
       {
@@ -329,13 +330,14 @@ async function show_booked(req,res){
       },
       { $set: { "no_of_seats.threeac": updatethreeac } }
     );
+    console.log(updatetrain,"updatetrain")
     
     
 
 
   }
   else{
-  //  const {updatesleeper ,updatepassengers} = updateseats(findogtrain,findtrain,noofseatscancel);  
+  
       const updatesleeper = parseInt(findogtrain.no_of_seats.sleeper) + noofseatscancel
     console.log("sleeper",updatesleeper)
     const updatetrain = await ogtrain.updateOne(
@@ -344,16 +346,19 @@ async function show_booked(req,res){
       },
       { $set: { "no_of_seats.sleeper": updatesleeper } }
     );
+    console.log(updatetrain,"updatetrain")
 
   }
   const canceltrain = await train.deleteOne({
     _id: new ObjectId(req.params.id),
   });
+  console.log(canceltrain)
   return res.json({
     "message":`booking  for the provided ${new ObjectId(req.params.id)}has been cancelled`,
     "request":succes
     
   })
+
 }
 else{
      
@@ -376,8 +381,9 @@ else{
       },
       { $set: { "no_of_passengers": updatepassengers } }
     );
-
-
+   console.log(updatetrain)
+   console.log(updatebooking)
+  
   }
   else{
     const updatesleeper = parseInt(findogtrain.no_of_seats.sleeper) + noofseatscancel
@@ -388,12 +394,16 @@ else{
       },
       { $set: { "no_of_seats.sleeper": updatesleeper } }
     );
+    console.log(updatetrain)
     const updatebooking = await train.updateOne(
       {
         _id:new ObjectId(req.params.id)
       },
       { $set: { "no_of_passengers": updatepassengers } }
-    );}
+    );
+    console.log(updatebooking)
+  }
+   
        return res.json({
         "message":`${noofseatscancel}  tickets has been succesfully cancelled from the booking`
        })

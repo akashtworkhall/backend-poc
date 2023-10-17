@@ -1,8 +1,8 @@
 import express from "express";
-import {admin} from "./middleware.js/admin.js";
+
 
 import userrouter from "./routes/userroutes.js"
-import user from './routes/authroute.js'
+
 import authrouter from './routes/authroute.js'
 import cookieParser from "cookie-parser";
 

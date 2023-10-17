@@ -1,12 +1,10 @@
 import express from "express";
-import { joi_string_validation,joi_email_validation, user_register,joi_number_validation, train_search, train_booking, tickets_delete, train_info_search, show_booking, user_role } from "../constant.js";
-import { auth } from "../middleware.js/admin.js";
-import { validatesearch ,validate} from "../validation/validationMiddleware.js";
-import { booking ,cancel,showBooking  } from "../validation/schema/userschema.js";
+import {  user_register,tickets_delete,  show_booking, user_role } from "../constant.js";
+import { auth ,admin } from "../middleware.js/admin.js";
+import { validate} from "../validation/validationMiddleware.js";
+import { cancel  } from "../validation/schema/userschema.js";
 import { registerPerson } from "../validation/schema/authschema.js";
-import { book_train, delete_tickets,  show_booked } from "../service/user.service.js";
-import {create_user} from "../service/user.service.js"
-import {admin} from "../middleware.js/admin.js"
+import {delete_tickets,  show_booked ,create_user} from "../service/user.service.js";
 import { change_role } from "../service/admin.service.js";
 const user_router  = express.Router();
 

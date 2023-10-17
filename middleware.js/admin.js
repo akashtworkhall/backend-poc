@@ -20,37 +20,19 @@ export const auth = (req,res,next)=>{
  const userrole = Jwt.verify(acesstoken,"privateaccesskey" ,function(err ,decoded){
      if(err){return res.status(401).json({"message":err})}
      req.email = decoded.email
+     console.log(userrole)
      next()
  }
  )
  
       
       
-//   req.email = userrole.email
-//   req.reftoken = userrole.refreshtoken
-//   console.log("reftoken")
 
- 
-//  if(!userrole){
-//  return res.json({"message":"invalid token "})
-//  }
  
 } 
-// export const refresh = (req,res,next)=>{
-//    const acesstoken = req?.cookies.acesstoken;
- 
-// const userrole = Jwt.verify(acesstoken,"privateaccesskey" )
- 
-// req.email = userrole.email
-// req.reftoken = userrole.refreshtoken
-// console.log("reftoken")
 
 
-// if(!userrole){
-// return res.json({"message":"invalid token "})
-// }
-// next()
-// } 
+
 
 export const bookingauth = (req,res)=>{
    const reftoken = req?.cookies.refreshToken;
@@ -92,16 +74,12 @@ const admin = (req,res ,next)=>{
    if(decoded.role!="admin"){
       return res.status(401).json({"message":"acess denied"});
    }
+   console.log(userrole)
    next()
 
 
  })
-// console.log(userrole)
- 
-//  if(userrole.role !="admin"){
-//     return res.json({"message":"acess denied"});
-//  }
- 
+
  
 
 
