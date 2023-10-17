@@ -48,5 +48,6 @@ export const tickets_to_be_cancel = "tickets to be cancelled cannot be greater t
 export const train_already_present = "this train has been added already!!"
 export const past_dates_update = "past date cannot be updated"
 export const train_departured  =  "train details cannot be updated as train has departured"
-
+export const acess_denied = "acess denied"
+export const not_logged_in = "Not yet logged in"
 

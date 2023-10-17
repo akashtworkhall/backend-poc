@@ -2,6 +2,7 @@ import Jwt from "jsonwebtoken"
 import express from "express"
 import cookieParser from "cookie-parser"
 import { dbConnection } from "../db.js";
+import { acess_denied, not_logged_in } from "../constant.js";
 
 
 
@@ -12,7 +13,7 @@ app.use(cookieParser())
 export const auth = (req,res,next)=>{
      const acesstoken = req?.cookies.acesstoken;
    if(!acesstoken){
-       return res.status(401).json({"message":"Not yet logged in"})
+       return res.status(401).json({"message":not_logged_in})
        
 
       }
@@ -20,7 +21,7 @@ export const auth = (req,res,next)=>{
  const userrole = Jwt.verify(acesstoken,"privateaccesskey" ,function(err ,decoded){
      if(err){return res.status(401).json({"message":err})}
      req.email = decoded.email
-     console.log(userrole)
+     
      next()
  }
  )
@@ -72,7 +73,7 @@ const admin = (req,res ,next)=>{
       })
    }
    if(decoded.role!="admin"){
-      return res.status(401).json({"message":"acess denied"});
+      return res.status(401).json({"message":acess_denied});
    }
    
    next()
