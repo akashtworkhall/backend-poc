@@ -38,12 +38,12 @@ if (source && destination){
     destinationindex = result[0].stations.indexOf(destination);
     console.log("destination", destinationindex);
   }
-  if (sourceIndex ===undefined) {
-    return res.status(422).json({"message":source_invalid});
-  }
-  if (destinationindex === undefined) {
-    return res.status(422).json({"message":destination_invalid});
-  }
+  // if (sourceIndex ===undefined) {
+  //   return res.status(422).json({"message":source_invalid});
+  // }
+  // if (destinationindex === undefined) {
+  //   return res.status(422).json({"message":destination_invalid});
+  // }
   if (source === destination){
     return res.status(422).json({"message":source_destination_equal});
   }
@@ -109,7 +109,7 @@ try {
     if (!result) {
       return res.status(404).json({"message":trains_not_found});
     } else {
-      return res.send(result);
+      return res.send(result)
     }
   }
 
